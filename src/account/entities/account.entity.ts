@@ -1,6 +1,6 @@
 import { Currency } from '@prisma/client';
 import { BankEntity } from 'src/bank/entities/bank.entity';
-import { Card } from 'src/card/entities/card.entity';
+import { CardEntity } from 'src/card/entities/card.entity';
 import { TransactionEntity } from 'src/transaction/entities/transaction.entity';
 
 export class AccountEntity {

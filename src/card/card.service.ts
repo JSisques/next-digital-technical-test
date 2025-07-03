@@ -1,26 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
+import { CardRepository } from './card.repository';
 
 @Injectable()
 export class CardService {
+  private readonly logger = new Logger(CardService.name);
+  constructor(private readonly cardRepository: CardRepository) {}
+
   create(createCardDto: CreateCardDto) {
-    return 'This action adds a new card';
+    this.logger.debug(`Creating card for account ${createCardDto.accountId}`);
+    return this.cardRepository.create(createCardDto);
   }
 
   findAll() {
-    return `This action returns all card`;
+    this.logger.debug('Finding all cards');
+    return this.cardRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
+  findOne(id: string) {
+    this.logger.debug(`Finding card ${id}`);
+    return this.cardRepository.findOne(id);
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
+  update(updateCardDto: UpdateCardDto) {
+    this.logger.debug(`Updating card ${updateCardDto.id}`);
+    return this.cardRepository.update(updateCardDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+  remove(id: string) {
+    this.logger.debug(`Removing card ${id}`);
+    return this.cardRepository.remove(id);
   }
 }

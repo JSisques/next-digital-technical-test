@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Logger,
 } from '@nestjs/common';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
@@ -14,21 +15,25 @@ import { UpdateCardDto } from './dto/update-card.dto';
 
 @Controller('card')
 export class CardController {
+  private readonly logger = new Logger(CardController.name);
   constructor(private readonly cardService: CardService) {}
 
   @Post()
   create(@Body() createCardDto: CreateCardDto) {
+    this.logger.debug(`Creating card for account ${createCardDto.accountId}`);
     return this.cardService.create(createCardDto);
   }
 
   @Get()
   findAll() {
+    this.logger.debug('Finding all cards');
     return this.cardService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.cardService.findOne(+id);
+    this.logger.debug(`Finding card ${id}`);
+    return this.cardService.findOne(id);
   }
 
   @Patch(':id')
@@ -36,11 +41,13 @@ export class CardController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCardDto: UpdateCardDto,
   ) {
-    return this.cardService.update(+id, updateCardDto);
+    this.logger.debug(`Updating card ${id}`);
+    return this.cardService.update(updateCardDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.cardService.remove(+id);
+    this.logger.debug(`Removing card ${id}`);
+    return this.cardService.remove(id);
   }
 }
