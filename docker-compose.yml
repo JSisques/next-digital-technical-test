@@ -17,6 +17,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  app:
+    build: .
+    container_name: app
+    command: pnpm prisma migrate deploy --schema src/prisma/prisma.schema
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - NODE_ENV=development
+    depends_on:
+      - postgres
+    networks:
+      - next-digital-technical-test-network
+
 networks:
   next-digital-technical-test-network:
     driver: bridge

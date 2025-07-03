@@ -27,6 +27,9 @@ RUN pnpm i --prod
 
 COPY --from=builder /usr/src/app/dist ./dist
 
+# Copy prisma schema to production image
+COPY src/prisma ./src/prisma
+
 RUN chown -R appuser:appgroup /usr/src/app
 
 USER appuser
