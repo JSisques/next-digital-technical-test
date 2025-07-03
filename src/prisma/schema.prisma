@@ -80,6 +80,7 @@ model Transaction {
 model Bank {
   id       String       @id @default(uuid())
   name     String
+  commission Float      @default(0.05)
   atms     Atm[]
   accounts Account[]
 }

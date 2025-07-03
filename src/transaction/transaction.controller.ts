@@ -13,6 +13,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TransactionEntity } from './entities/transaction.entity';
+import { TransferTransactionDto } from './dto/transfer-transaction.dto';
 
 @ApiTags('Transactions')
 @Controller('transactions')
@@ -89,5 +90,16 @@ export class TransactionController {
   })
   findByAccountId(@Param('accountId', ParseUUIDPipe) accountId: string) {
     return this.transactionService.findByAccountId(accountId);
+  }
+
+  @Post('transfer')
+  @ApiOperation({ summary: 'Transfer money between accounts' })
+  @ApiResponse({ status: 201, description: 'Transfer successful.' })
+  @ApiResponse({ status: 400, description: 'Invalid request or not allowed.' })
+  transfer(
+    @Body()
+    transferDto: TransferTransactionDto,
+  ) {
+    return this.transactionService.transfer(transferDto);
   }
 }

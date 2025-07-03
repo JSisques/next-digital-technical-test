@@ -6,4 +6,5 @@ export class BankEntity {
   name: string;
   atms: AtmEntity[];
   accounts: AccountEntity[];
+  commission: number;
 }

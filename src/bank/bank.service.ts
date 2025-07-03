@@ -34,4 +34,12 @@ export class BankService {
     this.logger.debug('Removing bank', id);
     return this.bankRepository.remove(id);
   }
+
+  async calculateCommission(bankId: string, amount: number): Promise<number> {
+    const bank = await this.bankRepository.findOne(bankId);
+    const commissionRate = Number(
+      bank && 'commission' in bank ? bank.commission : 0.05,
+    );
+    return Math.max(1, Math.round(amount * commissionRate));
+  }
 }

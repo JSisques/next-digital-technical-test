@@ -11,6 +11,8 @@ import { AccountRepository } from 'src/account/account.repository';
 import { TransactionRepository } from 'src/transaction/transaction.repository';
 import { TransactionType, CardType } from '@prisma/client';
 import { DepositAtmDto } from './dto/deposit-atm.dto';
+import { BankRepository } from 'src/bank/bank.repository';
+import { BankService } from 'src/bank/bank.service';
 
 @Injectable()
 export class AtmService {
@@ -21,6 +23,8 @@ export class AtmService {
     private readonly cardService: CardService,
     private readonly accountRepository: AccountRepository,
     private readonly transactionRepository: TransactionRepository,
+    private readonly bankRepository: BankRepository,
+    private readonly bankService: BankService,
   ) {}
 
   create(createAtmDto: CreateAtmDto) {
@@ -90,7 +94,10 @@ export class AtmService {
     // 6. Check if ATM is from another bank and calculate commission
     let commission = 0;
     if (atm.bankId !== account.bankId) {
-      commission = Math.max(1, Math.round(withdrawAtmDto.amount * 0.01)); // 1% commission, minimum 1
+      commission = await this.bankService.calculateCommission(
+        account.bankId,
+        withdrawAtmDto.amount,
+      );
     }
     // 7. Register withdrawal transaction
     await this.transactionRepository.create({

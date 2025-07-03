@@ -8,6 +8,8 @@ import { CardService } from 'src/card/card.service';
 import { CardRepository } from 'src/card/card.repository';
 import { TransactionRepository } from 'src/transaction/transaction.repository';
 import { AccountRepository } from 'src/account/account.repository';
+import { BankRepository } from 'src/bank/bank.repository';
+import { BankService } from 'src/bank/bank.service';
 
 @Module({
   imports: [PrismaModule],
@@ -19,6 +21,8 @@ import { AccountRepository } from 'src/account/account.repository';
     CardRepository,
     AccountRepository,
     TransactionRepository,
+    BankRepository,
+    BankService,
   ],
 })
 export class AtmModule {}

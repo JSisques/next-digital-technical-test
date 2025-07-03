@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Bank" ADD COLUMN     "commission" DOUBLE PRECISION NOT NULL DEFAULT 0.05;

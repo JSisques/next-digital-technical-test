@@ -10,4 +10,12 @@ export class CreateBankDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @ApiProperty({
+    description: 'Commission percentage for operations (e.g. 0.05 for 5%)',
+    example: 0.05,
+    required: false,
+    default: 0.05,
+  })
+  commission?: number = 0.05;
 }
