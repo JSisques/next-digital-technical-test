@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Logger,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -31,19 +32,22 @@ export class AccountController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     this.logger.debug(`Finding account ${id}`);
     return this.accountService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAccountDto: UpdateAccountDto,
+  ) {
     this.logger.debug(`Updating account ${id}`);
     return this.accountService.update(updateAccountDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     this.logger.debug(`Removing account ${id}`);
     return this.accountService.remove(id);
   }

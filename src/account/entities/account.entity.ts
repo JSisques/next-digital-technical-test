@@ -1,7 +1,7 @@
 import { Currency } from '@prisma/client';
 import { BankEntity } from 'src/bank/entities/bank.entity';
 import { Card } from 'src/card/entities/card.entity';
-import { Transaction } from 'src/transaction/entities/transaction.entity';
+import { TransactionEntity } from 'src/transaction/entities/transaction.entity';
 
 export class AccountEntity {
   id: string;
@@ -10,8 +10,8 @@ export class AccountEntity {
   currency: Currency;
   createdAt: Date;
   updatedAt: Date;
-  cards: Card[];
-  transactions: Transaction[];
+  cards: CardEntity[];
+  transactions: TransactionEntity[];
   bank?: BankEntity;
   bankId?: string;
 }

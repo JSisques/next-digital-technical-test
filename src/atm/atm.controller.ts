@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Logger,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AtmService } from './atm.service';
 import { CreateAtmDto } from './dto/create-atm.dto';
@@ -117,7 +118,7 @@ export class AtmController {
     },
   })
   @ApiResponse({ status: 404, description: 'ATM not found.' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     this.logger.debug(`Finding ATM ${id}`);
     return this.atmService.findOne(id);
   }
@@ -159,7 +160,10 @@ export class AtmController {
     },
   })
   @ApiResponse({ status: 404, description: 'ATM not found.' })
-  update(@Param('id') id: string, @Body() updateAtmDto: UpdateAtmDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAtmDto: UpdateAtmDto,
+  ) {
     this.logger.debug(`Updating ATM ${id}`);
     return this.atmService.update(updateAtmDto);
   }
@@ -189,7 +193,7 @@ export class AtmController {
     },
   })
   @ApiResponse({ status: 404, description: 'ATM not found.' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     this.logger.debug(`Removing ATM ${id}`);
     return this.atmService.remove(id);
   }

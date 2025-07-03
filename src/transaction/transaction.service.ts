@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { TransactionRepository } from './transaction.repository';
 
 @Injectable()
 export class TransactionService {
+  private readonly logger = new Logger(TransactionService.name);
+
+  constructor(private readonly transactionRepository: TransactionRepository) {}
+
   create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+    this.logger.debug(
+      `Creating transaction for account ${createTransactionDto.accountId}`,
+    );
+    return this.transactionRepository.create(createTransactionDto);
   }
 
   findAll() {
-    return `This action returns all transaction`;
+    this.logger.debug('Finding all transactions');
+    return this.transactionRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  findOne(id: string) {
+    this.logger.debug(`Finding transaction ${id}`);
+    return this.transactionRepository.findOne(id);
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  update(id: string, updateTransactionDto: UpdateTransactionDto) {
+    this.logger.debug(`Updating transaction ${id}`);
+    return this.transactionRepository.update(updateTransactionDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  remove(id: string) {
+    this.logger.debug(`Removing transaction ${id}`);
+    return this.transactionRepository.remove(id);
   }
 }

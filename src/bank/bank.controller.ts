@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { BankService } from './bank.service';
 import { CreateBankDto } from './dto/create-bank.dto';
@@ -47,7 +48,7 @@ export class BankController {
   @ApiParam({ name: 'id', description: 'Bank ID' })
   @ApiResponse({ status: 200, description: 'Return the bank.' })
   @ApiResponse({ status: 404, description: 'Bank not found.' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.bankService.findOne(id);
   }
 
@@ -60,7 +61,10 @@ export class BankController {
     description: 'The bank has been successfully updated.',
   })
   @ApiResponse({ status: 404, description: 'Bank not found.' })
-  update(@Param('id') id: string, @Body() updateBankDto: UpdateBankDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateBankDto: UpdateBankDto,
+  ) {
     return this.bankService.update(updateBankDto);
   }
 
@@ -72,7 +76,7 @@ export class BankController {
     description: 'The bank has been successfully deleted.',
   })
   @ApiResponse({ status: 404, description: 'Bank not found.' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.bankService.remove(id);
   }
 }
