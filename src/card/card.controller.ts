@@ -50,4 +50,23 @@ export class CardController {
     this.logger.debug(`Removing card ${id}`);
     return this.cardService.remove(id);
   }
+
+  @Post(':id/activate')
+  async activate(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('pin') pin: string,
+  ) {
+    this.logger.debug(`Activating card ${id}`);
+    return this.cardService.activate(id, pin);
+  }
+
+  @Post(':id/change-pin')
+  async changePin(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('oldPin') oldPin: string,
+    @Body('newPin') newPin: string,
+  ) {
+    this.logger.debug(`Changing PIN for card ${id}`);
+    return this.cardService.changePin(id, oldPin, newPin);
+  }
 }

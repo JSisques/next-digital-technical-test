@@ -20,6 +20,7 @@ import {
   ApiBody,
   ApiExtraModels,
 } from '@nestjs/swagger';
+import { WithdrawAtmDto } from './dto/withdraw-atm.dto';
 
 @ApiTags('ATMs')
 @Controller('atm')
@@ -196,5 +197,21 @@ export class AtmController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     this.logger.debug(`Removing ATM ${id}`);
     return this.atmService.remove(id);
+  }
+
+  @Post('withdraw')
+  @ApiOperation({
+    summary: 'Withdraw money from an account using a card at an ATM',
+  })
+  @ApiResponse({ status: 201, description: 'Withdrawal successful.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request or insufficient funds/credit.',
+  })
+  withdraw(@Body() withdrawAtmDto: WithdrawAtmDto) {
+    this.logger.debug(
+      `Withdraw request for card ${withdrawAtmDto.cardId} at ATM ${withdrawAtmDto.atmId}`,
+    );
+    return this.atmService.withdraw(withdrawAtmDto);
   }
 }

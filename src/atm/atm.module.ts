@@ -3,10 +3,22 @@ import { AtmService } from './atm.service';
 import { AtmController } from './atm.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { AtmRepository } from './atm.repository';
+import { CardModule } from 'src/card/card.module';
+import { CardService } from 'src/card/card.service';
+import { CardRepository } from 'src/card/card.repository';
+import { TransactionRepository } from 'src/transaction/transaction.repository';
+import { AccountRepository } from 'src/account/account.repository';
 
 @Module({
   imports: [PrismaModule],
   controllers: [AtmController],
-  providers: [AtmService, AtmRepository],
+  providers: [
+    AtmService,
+    AtmRepository,
+    CardService,
+    CardRepository,
+    AccountRepository,
+    TransactionRepository,
+  ],
 })
 export class AtmModule {}
