@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Banks')
-@Controller('bank')
+@Controller('banks')
 export class BankController {
   constructor(private readonly bankService: BankService) {}
 

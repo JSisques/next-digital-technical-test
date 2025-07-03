@@ -24,7 +24,7 @@ import { WithdrawAtmDto } from './dto/withdraw-atm.dto';
 import { DepositAtmDto } from './dto/deposit-atm.dto';
 
 @ApiTags('ATMs')
-@Controller('atm')
+@Controller('atms')
 @ApiExtraModels(CreateAtmDto, UpdateAtmDto)
 export class AtmController {
   private readonly logger = new Logger(AtmController.name);
