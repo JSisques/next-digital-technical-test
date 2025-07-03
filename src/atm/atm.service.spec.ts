@@ -177,7 +177,10 @@ describe('AtmService', () => {
     });
     it('should throw if withdrawal amount exceeds card limit', async () => {
       mockCardService.validateCardAndPin.mockResolvedValue(baseCard);
-      mockAccountRepository.findOne.mockResolvedValue(baseAccount);
+      mockAccountRepository.findOne.mockResolvedValue({
+        ...baseAccount,
+        balance: 5000,
+      });
       mockAtmRepository.findOne.mockResolvedValue(baseAtm);
       await expect(
         service.withdraw({ ...withdrawDto, amount: 2000 }),

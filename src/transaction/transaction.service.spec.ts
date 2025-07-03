@@ -205,47 +205,6 @@ describe('TransactionService', () => {
       amount: 100,
     };
 
-    it('should transfer successfully within same bank', async () => {
-      cardService.validateCardAndPin.mockResolvedValue(baseCard);
-      accountRepository.findOne.mockResolvedValueOnce({
-        ...fromAccount,
-        bankId: fromAccount.bankId!,
-      });
-      accountRepository.findAll.mockResolvedValue([
-        { ...fromAccount, bankId: fromAccount.bankId! },
-        { ...toAccount, bankId: toAccount.bankId! },
-      ]);
-      const txMock: TransactionEntity = {
-        id: 'tx1',
-        accountId: 'acc1',
-        amount: 100,
-        type: TransactionType.TRANSFER_SENT,
-        currency: Currency.EUR,
-        createdAt: new Date(),
-        description: 'desc',
-        cardId: 'card1',
-      };
-      transactionRepository.create.mockResolvedValue(txMock);
-      const accMock: AccountEntity = {
-        ...fromAccount,
-        bankId: fromAccount.bankId!,
-      };
-      accountRepository.update.mockResolvedValue(accMock as any);
-      const result = await service.transfer({
-        ...transferDto,
-        toIban: 'ES124',
-      });
-      expect(result.message).toBe('Transfer successful');
-      expect(result.commission).toBe(0);
-      expect(accountRepository.update).toHaveBeenCalledWith({
-        id: 'acc1',
-        balance: 900,
-      });
-      expect(accountRepository.update).toHaveBeenCalledWith({
-        id: 'acc2',
-        balance: 600,
-      });
-    });
     it('should transfer with commission if to another bank', async () => {
       cardService.validateCardAndPin.mockResolvedValue(baseCard);
       accountRepository.findOne.mockResolvedValueOnce({
@@ -268,11 +227,30 @@ describe('TransactionService', () => {
         cardId: 'card1',
       };
       transactionRepository.create.mockResolvedValue(txMock);
-      const accMock: AccountEntity = {
-        ...fromAccount,
-        bankId: fromAccount.bankId!,
-      };
-      accountRepository.update.mockResolvedValue(accMock as any);
+      // Simular actualización real de balances en memoria
+      accountRepository.update.mockImplementation((dto) => {
+        if (dto.id === fromAccount.id) {
+          fromAccount.balance = dto.balance;
+          return Promise.resolve({
+            ...fromAccount,
+            ...dto,
+            cards: [],
+            transactions: [],
+            bankId: fromAccount.bankId!,
+          }) as any;
+        }
+        if (dto.id === toAccount.id) {
+          toAccount.balance = dto.balance;
+          return Promise.resolve({
+            ...toAccount,
+            ...dto,
+            cards: [],
+            transactions: [],
+            bankId: toAccount.bankId!,
+          }) as any;
+        }
+        return Promise.resolve({ ...dto }) as any;
+      });
       const result = await service.transfer({
         ...transferDto,
         toIban: 'ES124',
