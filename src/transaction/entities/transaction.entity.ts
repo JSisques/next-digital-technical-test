@@ -5,8 +5,8 @@ export class TransactionEntity {
   amount: number;
   currency: Currency;
   type: TransactionType;
-  description?: string;
+  description: string;
   createdAt: Date;
-  cardId?: string;
+  cardId: string;
   accountId: string;
 }
