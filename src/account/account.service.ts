@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AccountService {
+  private readonly logger = new Logger(AccountService.name);
+
+  constructor(private readonly prisma: PrismaService) {}
+
   create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+    this.logger.debug(`Creating account ${createAccountDto.iban}`);
+    return this.prisma.account.create({
+      data: createAccountDto,
+    });
   }
 
   findAll() {
-    return `This action returns all account`;
+    this.logger.debug('Finding all accounts');
+    return this.prisma.account.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
+  findOne(id: string) {
+    this.logger.debug(`Finding account ${id}`);
+    return this.prisma.account.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  update(updateAccountDto: UpdateAccountDto) {
+    const { id, ...data } = updateAccountDto;
+    this.logger.debug(`Updating account ${id}`);
+    return this.prisma.account.update({
+      where: { id },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  remove(id: string) {
+    this.logger.debug(`Removing account ${id}`);
+    return this.prisma.account.delete({
+      where: { id },
+    });
   }
 }
