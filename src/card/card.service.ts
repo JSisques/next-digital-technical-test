@@ -16,7 +16,7 @@ export class CardService {
     const hashedPin = await bcrypt.hash(createCardDto.pin, 10);
     createCardDto.pin = hashedPin;
 
-    return this.cardRepository.create(createCardDto);
+    return await this.cardRepository.create(createCardDto);
   }
 
   findAll() {

@@ -31,7 +31,7 @@ describe('CardService', () => {
   });
 
   describe('CRUD', () => {
-    it('should call create on repository', () => {
+    it('should hash pin and call create on repository, and not return pin in response', async () => {
       const dto = {
         cardNumber: '4532015112830366',
         cardholderName: 'John Doe',
@@ -43,9 +43,19 @@ describe('CardService', () => {
         withdrawalLimit: 1000,
         accountId: 'acc1',
       };
-      mockCardRepository.create.mockResolvedValue('created');
-      expect(service.create(dto)).resolves.toBe('created');
-      expect(mockCardRepository.create).toHaveBeenCalledWith(dto);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPin');
+      // Simula que el repositorio nunca devuelve el pin
+      mockCardRepository.create.mockImplementation((data) => {
+        const { pin, ...rest } = data;
+        return rest;
+      });
+      const result = await service.create({ ...dto });
+      expect(bcrypt.hash).toHaveBeenCalledWith('1234', 10);
+      expect(mockCardRepository.create).toHaveBeenCalledWith({
+        ...dto,
+        pin: 'hashedPin',
+      });
+      expect(result).not.toHaveProperty('pin');
     });
     it('should call findAll on repository', () => {
       mockCardRepository.findAll.mockResolvedValue(['card1']);
