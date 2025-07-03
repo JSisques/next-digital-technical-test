@@ -13,3 +13,80 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+enum CardType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER_RECEIVED
+  TRANSFER_SENT
+  FEE
+}
+
+enum Currency {
+  EUR
+  USD
+  GBP
+}
+
+
+model Card {
+  id              String           @id @default(cuid())
+  cardNumber      String        @unique
+  cardholderName  String
+  expirationDate  DateTime 
+  cvv             Int
+  pin         String
+  isActivated        Boolean       @default(false)
+  type            CardType
+  withdrawalLimit Float         @default(1000)
+  account         Account       @relation(fields: [accountId], references: [id])
+  accountId       String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  transactions     Transaction[]
+}
+
+model Account {
+  id           String           @id @default(cuid())
+  iban         String        @unique
+  balance      Float         @default(0.0)
+  currency     Currency      @default(EUR)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  cards        Card[]
+  transactions Transaction[]
+  Bank         Bank?         @relation(fields: [bankId], references: [id])
+  bankId       String?
+}
+
+model Transaction {
+  id          String             @id @default(cuid())
+  amount      Float
+  currency    Currency          @default(EUR)
+  type        TransactionType
+  description String?
+  createdAt   DateTime        @default(now())
+  card        Card?           @relation(fields: [cardId], references: [id])
+  cardId      String?
+
+  accountId String
+  Account   Account @relation(fields: [accountId], references: [id])
+}
+
+model Bank {
+  id       String       @id @default(cuid())
+  name     String
+  atms     ATM[]
+  accounts Account[]
+}
+
+model ATM {
+  id     String    @id @default(cuid())
+  name   String
+  bankId String
+  bank   Bank   @relation(fields: [bankId], references: [id])
+}
