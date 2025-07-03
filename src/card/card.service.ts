@@ -9,8 +9,13 @@ export class CardService {
   private readonly logger = new Logger(CardService.name);
   constructor(private readonly cardRepository: CardRepository) {}
 
-  create(createCardDto: CreateCardDto) {
+  async create(createCardDto: CreateCardDto) {
     this.logger.debug(`Creating card for account ${createCardDto.accountId}`);
+
+    // Hash the PIN
+    const hashedPin = await bcrypt.hash(createCardDto.pin, 10);
+    createCardDto.pin = hashedPin;
+
     return this.cardRepository.create(createCardDto);
   }
 
