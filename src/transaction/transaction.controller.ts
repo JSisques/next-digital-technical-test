@@ -15,7 +15,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TransactionEntity } from './entities/transaction.entity';
 
 @ApiTags('Transactions')
-@Controller('transaction')
+@Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
@@ -78,5 +78,16 @@ export class TransactionController {
   @ApiResponse({ status: 404, description: 'Transaction not found.' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.transactionService.remove(id);
+  }
+
+  @Get('account/:accountId')
+  @ApiOperation({ summary: 'Get all transactions for a specific account' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all transactions for the given account.',
+    type: [TransactionEntity],
+  })
+  findByAccountId(@Param('accountId', ParseUUIDPipe) accountId: string) {
+    return this.transactionService.findByAccountId(accountId);
   }
 }

@@ -35,4 +35,9 @@ export class TransactionService {
     this.logger.debug(`Removing transaction ${id}`);
     return this.transactionRepository.remove(id);
   }
+
+  findByAccountId(accountId: string) {
+    this.logger.debug(`Finding transactions for account ${accountId}`);
+    return this.transactionRepository.findByAccountId(accountId);
+  }
 }

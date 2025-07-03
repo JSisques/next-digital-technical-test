@@ -36,4 +36,10 @@ export class TransactionRepository {
       where: { id },
     });
   }
+
+  findByAccountId(accountId: string) {
+    return this.prisma.transaction.findMany({
+      where: { accountId },
+    });
+  }
 }
