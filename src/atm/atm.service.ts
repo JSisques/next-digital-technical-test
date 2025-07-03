@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateAtmDto } from './dto/create-atm.dto';
 import { UpdateAtmDto } from './dto/update-atm.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { AtmRepository } from './atm.repository';
 
 @Injectable()
 export class AtmService {
+  private readonly logger = new Logger(AtmService.name);
+
+  constructor(private readonly atmRepository: AtmRepository) {}
+
   create(createAtmDto: CreateAtmDto) {
-    return 'This action adds a new atm';
+    this.logger.debug(`Creating ATM ${createAtmDto.name}`);
+    return this.atmRepository.create(createAtmDto);
   }
 
   findAll() {
-    return `This action returns all atm`;
+    this.logger.debug('Finding all ATMs');
+    return this.atmRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} atm`;
+  findOne(id: string) {
+    this.logger.debug(`Finding ATM ${id}`);
+    return this.atmRepository.findOne(id);
   }
 
-  update(id: number, updateAtmDto: UpdateAtmDto) {
-    return `This action updates a #${id} atm`;
+  update(updateAtmDto: UpdateAtmDto) {
+    const { id, ...data } = updateAtmDto;
+    this.logger.debug(`Updating ATM ${id}`);
+    return this.atmRepository.update(updateAtmDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} atm`;
+  remove(id: string) {
+    this.logger.debug(`Removing ATM ${id}`);
+    return this.atmRepository.remove(id);
   }
 }

@@ -80,11 +80,11 @@ model Transaction {
 model Bank {
   id       String       @id @default(uuid())
   name     String
-  atms     ATM[]
+  atms     Atm[]
   accounts Account[]
 }
 
-model ATM {
+model Atm {
   id     String    @id @default(uuid())
   name   String
   bankId String
