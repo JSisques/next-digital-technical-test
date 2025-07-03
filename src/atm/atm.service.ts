@@ -10,6 +10,7 @@ import { CardService } from 'src/card/card.service';
 import { AccountRepository } from 'src/account/account.repository';
 import { TransactionRepository } from 'src/transaction/transaction.repository';
 import { TransactionType, CardType } from '@prisma/client';
+import { DepositAtmDto } from './dto/deposit-atm.dto';
 
 @Injectable()
 export class AtmService {
@@ -121,6 +122,51 @@ export class AtmService {
       message: 'Withdrawal successful',
       withdrawn: withdrawAtmDto.amount,
       commission,
+      newBalance,
+    };
+  }
+
+  async deposit(depositAtmDto: DepositAtmDto) {
+    this.logger.debug(
+      `Processing deposit for card ${depositAtmDto.cardId} at ATM ${depositAtmDto.atmId}`,
+    );
+    // Validate card and PIN
+    const card = await this.cardService.validateCardAndPin(
+      depositAtmDto.cardId,
+      depositAtmDto.pin,
+    );
+    // Get associated account
+    const account = await this.accountRepository.findOne(card.accountId);
+    if (!account) {
+      throw new Error('Associated account not found');
+    }
+    // Get ATM
+    const atm = await this.atmRepository.findOne(depositAtmDto.atmId);
+    if (!atm) {
+      throw new Error('ATM not found');
+    }
+    // Check if ATM is from the same bank
+    if (atm.bankId !== account.bankId) {
+      throw new Error('Deposits are only allowed at ATMs of the same bank');
+    }
+    // Register deposit transaction
+    await this.transactionRepository.create({
+      amount: depositAtmDto.amount,
+      currency: account.currency,
+      type: TransactionType.DEPOSIT,
+      description: `ATM deposit at ${atm.id}`,
+      cardId: card.id,
+      accountId: account.id,
+    });
+    // Update account balance
+    let newBalance = account.balance + depositAtmDto.amount;
+    await this.accountRepository.update({
+      id: account.id,
+      balance: newBalance,
+    });
+    return {
+      message: 'Deposit successful',
+      deposited: depositAtmDto.amount,
       newBalance,
     };
   }

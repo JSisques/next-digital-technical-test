@@ -21,6 +21,7 @@ import {
   ApiExtraModels,
 } from '@nestjs/swagger';
 import { WithdrawAtmDto } from './dto/withdraw-atm.dto';
+import { DepositAtmDto } from './dto/deposit-atm.dto';
 
 @ApiTags('ATMs')
 @Controller('atm')
@@ -213,5 +214,18 @@ export class AtmController {
       `Withdraw request for card ${withdrawAtmDto.cardId} at ATM ${withdrawAtmDto.atmId}`,
     );
     return this.atmService.withdraw(withdrawAtmDto);
+  }
+
+  @Post('deposit')
+  @ApiOperation({
+    summary: 'Deposit money into an account using a card at an ATM',
+  })
+  @ApiResponse({ status: 201, description: 'Deposit successful.' })
+  @ApiResponse({ status: 400, description: 'Invalid request or not allowed.' })
+  deposit(@Body() depositAtmDto: DepositAtmDto) {
+    this.logger.debug(
+      `Deposit request for card ${depositAtmDto.cardId} at ATM ${depositAtmDto.atmId}`,
+    );
+    return this.atmService.deposit(depositAtmDto);
   }
 }
