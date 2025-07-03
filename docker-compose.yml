@@ -1,0 +1,25 @@
+version: '3.8'
+name: next-digital-technical-test
+
+services:
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    networks:
+      - next-digital-technical-test-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  next-digital-technical-test-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
