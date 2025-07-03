@@ -34,7 +34,7 @@ enum Currency {
 
 
 model Card {
-  id              String           @id @default(cuid())
+  id              String           @id @default(uuid())
   cardNumber      String        @unique
   cardholderName  String
   expirationDate  DateTime 
@@ -51,7 +51,7 @@ model Card {
 }
 
 model Account {
-  id           String           @id @default(cuid())
+  id           String           @id @default(uuid())
   iban         String        @unique
   balance      Float         @default(0.0)
   currency     Currency      @default(EUR)
@@ -64,7 +64,7 @@ model Account {
 }
 
 model Transaction {
-  id          String             @id @default(cuid())
+  id          String             @id @default(uuid())
   amount      Float
   currency    Currency          @default(EUR)
   type        TransactionType
@@ -78,14 +78,14 @@ model Transaction {
 }
 
 model Bank {
-  id       String       @id @default(cuid())
+  id       String       @id @default(uuid())
   name     String
   atms     ATM[]
   accounts Account[]
 }
 
 model ATM {
-  id     String    @id @default(cuid())
+  id     String    @id @default(uuid())
   name   String
   bankId String
   bank   Bank   @relation(fields: [bankId], references: [id])
